@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --app-bg: #070b13;
+  --app-text: #cbd5e1;
+  --app-header-bg: rgba(13, 19, 34, 0.85);
+  --card-bg: rgba(17, 24, 39, 0.75);
+  --card-border: rgba(30, 41, 59, 0.8);
+  --input-bg: rgba(2, 6, 23, 0.6);
+  --input-border: rgba(30, 41, 59, 0.8);
+  --input-text: #f8fafc;
+  --title-color: #ffffff;
+  --muted-text: #94a3b8;
+  --panel-bg: rgba(2, 6, 23, 0.2);
+  --panel-border: rgba(30, 41, 59, 0.8);
+  --hover-bg: rgba(30, 41, 59, 0.4);
+  --modal-bg: #111827;
+  --border-subtle: rgba(30, 41, 59, 0.5);
+  --text-active: #ffffff;
+  --bg-active: rgba(99, 102, 241, 0.1);
+}
+
+.light-theme {
+  --app-bg: #f8fafc;
+  --app-text: #1e293b;
+  --app-header-bg: rgba(255, 255, 255, 0.9);
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --input-text: #0f172a;
+  --title-color: #0f172a;
+  --muted-text: #64748b;
+  --panel-bg: #f8fafc;
+  --panel-border: #e2e8f0;
+  --hover-bg: #f1f5f9;
+  --modal-bg: #ffffff;
+  --border-subtle: #e2e8f0;
+  --text-active: #0f172a;
+  --bg-active: rgba(99, 102, 241, 0.08);
+
+  /* Deep nested utility class overrides for perfect backwards compatibility */
+  p, span, h1, h2, h3, h4, h5, h6, div, label, dt, dd, th, td, select, input, textarea {
+    &.text-white, &.text-slate-100, &.text-slate-50 {
+      color: #0f172a !important;
+    }
+    &.text-slate-200 {
+      color: #1e293b !important;
+    }
+    &.text-slate-300 {
+      color: #334155 !important;
+    }
+    &.text-slate-400 {
+      color: #475569 !important;
+    }
+    &.text-slate-500 {
+      color: #64748b !important;
+    }
+    &.text-slate-600 {
+      color: #475569 !important;
+    }
+    &.text-slate-700 {
+      color: #334155 !important;
+    }
+  }
+
+  /* Structural Panel backgrounds */
+  .bg-\[\#111827\]\/75, .bg-\[\#111827\]\/70, .bg-\[\#111827\], .bg-slate-900, .bg-slate-900\/40, .bg-slate-900\/60, .bg-slate-900\/75 {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+  }
+  
+  .bg-slate-950\/20, .bg-slate-950\/30, .bg-slate-950\/40, .bg-slate-950\/45, .bg-slate-950\/60 {
+    background-color: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  /* Border color transformations */
+  .border-slate-800, .border-slate-800\/30, .border-slate-800\/60, .border-slate-800\/80, .border-slate-850, .border-slate-850\/60, .border-slate-850\/80 {
+    border-color: #e2e8f0 !important;
+  }
+
+  /* Form entry components */
+  input, select, textarea {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: #6366f1 !important;
+    outline: none !important;
+    --tw-ring-color: rgba(99, 102, 241, 0.2);
+  }
+  input::placeholder, textarea::placeholder {
+    color: #94a3b8 !important;
+  }
+
+  /* Badge colors */
+  .bg-violet-500\/10 {
+    background-color: rgba(139, 92, 246, 0.1) !important;
+    color: #5b21b6 !important;
+  }
+  .bg-emerald-500\/10 {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    color: #065f46 !important;
+  }
+  .bg-rose-550\/10, .bg-rose-500\/10 {
+    background-color: rgba(244, 63, 94, 0.1) !important;
+    color: #9f1239 !important;
+  }
+  .bg-amber-500\/10 {
+    background-color: rgba(245, 158, 11, 0.1) !important;
+    color: #92400e !important;
+  }
+  
+  /* Text Highlights */
+  .text-violet-400 {
+    color: #6d28d9 !important;
+  }
+  .text-emerald-400 {
+    color: #047857 !important;
+  }
+  .text-rose-400 {
+    color: #c084fc;
+    color: #be123c !important;
+  }
+  .text-amber-400 {
+    color: #b45309 !important;
+  }
+  .text-sky-400 {
+    color: #0369a1 !important;
+  }
+
+  /* Specific interactive list hover classes */
+  li.hover\:bg-slate-850\/40:hover, div.hover\:bg-slate-850\/40:hover {
+    background-color: #f1f5f9 !important;
+  }
+
+  .hover\:bg-slate-850:hover, .hover\:bg-slate-800:hover {
+    background-color: #e2e8f0 !important;
+  }
+
+  /* Quick-click Program Course Presets panel styling fix */
+  .COURSE_PRESET_ITEM {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+  .COURSE_PRESET_ITEM:hover {
+    background-color: #f1f5f9 !important;
+    border-color: #94a3b8 !important;
+  }
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-app-bg: var(--app-bg);
+  --color-app-text: var(--app-text);
+  --color-app-header-bg: var(--app-header-bg);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-input-bg: var(--input-bg);
+  --color-input-border: var(--input-border);
+  --color-input-text: var(--input-text);
+  --color-title-color: var(--title-color);
+  --color-muted-text: var(--muted-text);
+  --color-panel-bg: var(--panel-bg);
+  --color-panel-border: var(--panel-border);
+  --color-hover-bg: var(--hover-bg);
+  --color-modal-bg: var(--modal-bg);
+  --color-border-subtle: var(--border-subtle);
+  --color-text-active: var(--text-active);
+  --color-bg-active: var(--bg-active);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 9px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(124, 58, 237, 0.2);
+  border-radius: 9px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 58, 237, 0.4);
+}
+

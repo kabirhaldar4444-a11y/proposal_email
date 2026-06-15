@@ -1,0 +1,314 @@
+{
+  "users": [
+    {
+      "id": "usr_admin",
+      "name": "System Admin",
+      "email": "admin@invoicemailer.pro",
+      "password": "admin",
+      "role": "Admin",
+      "createdAt": "2026-06-08T08:55:37.323Z"
+    },
+    {
+      "id": "usr_staff",
+      "name": "Billing Executive",
+      "email": "staff@invoicemailer.pro",
+      "password": "staff",
+      "role": "Staff",
+      "createdAt": "2026-06-08T08:55:37.324Z"
+    }
+  ],
+  "customers": [
+    {
+      "id": "cust_1",
+      "name": "Rahul Sharma",
+      "email": "rahul.sharma@vertex-corp.io",
+      "phone": "+91 98765 43210",
+      "companyName": "Vertex Tech Corp",
+      "designation": "VP Engineering",
+      "address": "Plot 42, Sector V, Salt Lake City, Kolkata, India",
+      "notes": "Prefers corporate invoices with detailed breakdowns.",
+      "createdAt": "2026-05-09T08:55:37.324Z"
+    },
+    {
+      "id": "cust_2",
+      "name": "Anjali Nair",
+      "email": "anjali.n@cloudscale.net",
+      "phone": "+91 88001 22998",
+      "companyName": "CloudScale Inc",
+      "designation": "Director of Operations",
+      "address": "Adani Tech Park, Sector 62, Noida, UP, India",
+      "notes": "Always checks for Complementary PMP Access offers.",
+      "createdAt": "2026-05-24T08:55:37.324Z"
+    },
+    {
+      "id": "cust_3",
+      "name": "Vikram Malhotra",
+      "email": "vikram@pioneercapital.co",
+      "phone": "+91 99887 76655",
+      "companyName": "Pioneer Capital",
+      "designation": "Managing Partner",
+      "address": "Bandra Kurla Complex, Mumbai, India",
+      "notes": "Needs invoices dispatched immediately on generation.",
+      "createdAt": "2026-06-03T08:55:37.324Z"
+    },
+    {
+      "id": "cust_1780909898928",
+      "name": "rfthy",
+      "email": "rtyr@GMAIL.COM",
+      "phone": "8888888888",
+      "companyName": "HFGH",
+      "designation": "GHFG FGHF G",
+      "address": "FGH FGH FH",
+      "notes": "FHFGHFGHFG",
+      "createdAt": "2026-06-08T09:11:38.928Z"
+    },
+    {
+      "id": "cust_1780912784404",
+      "name": "SHRI",
+      "email": "admin@invoicemailer.pro",
+      "phone": "8888888888",
+      "companyName": "TEST",
+      "designation": "GFH FGHF ",
+      "address": "FGHF FGHFG",
+      "notes": "DFGHD FGDGD",
+      "createdAt": "2026-06-08T09:59:44.404Z"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "inv_101",
+      "customerId": "cust_1",
+      "grandTotal": 79000,
+      "sponsorshipAmount": 39500,
+      "payableAmount": 39500,
+      "status": "Paid",
+      "createdAt": "2026-05-27T08:55:37.324Z",
+      "items": [
+        {
+          "id": "item_1",
+          "invoiceId": "inv_101",
+          "programName": "PfMP Core Certification Preparation",
+          "duration": "90 Days",
+          "price": 33474.58,
+          "gst": 5025.42,
+          "total": 38500
+        },
+        {
+          "id": "item_2",
+          "invoiceId": "inv_101",
+          "programName": "PgMP Professional Blueprint",
+          "duration": "90 Days",
+          "price": 33474.58,
+          "gst": 6025.42,
+          "total": 39500
+        },
+        {
+          "id": "item_3",
+          "invoiceId": "inv_101",
+          "programName": "PMP Training (Complementary)",
+          "duration": "90 Days",
+          "price": 0,
+          "gst": 0,
+          "total": 0
+        }
+      ]
+    },
+    {
+      "id": "inv_102",
+      "customerId": "cust_2",
+      "grandTotal": 38500,
+      "sponsorshipAmount": 0,
+      "payableAmount": 38500,
+      "status": "Pending",
+      "createdAt": "2026-06-05T08:55:37.324Z",
+      "items": [
+        {
+          "id": "item_4",
+          "invoiceId": "inv_102",
+          "programName": "PfMP Core Certification Preparation",
+          "duration": "90 Days",
+          "price": 33474.58,
+          "gst": 5025.42,
+          "total": 38500
+        }
+      ]
+    },
+    {
+      "id": "inv_1780909937035",
+      "customerId": "cust_1780909898928",
+      "grandTotal": 38499.78,
+      "sponsorshipAmount": 39500,
+      "payableAmount": 0,
+      "status": "Paid",
+      "createdAt": "2026-06-08T09:12:17.035Z",
+      "items": [
+        {
+          "id": "item_inv_1780909937035_0",
+          "invoiceId": "inv_1780909937035",
+          "programName": "PfMP Core Certification Preparation",
+          "duration": "90 Days",
+          "price": 33474.58,
+          "gst": 5025.2,
+          "total": 38499.78
+        }
+      ]
+    },
+    {
+      "id": "inv_1780912825208",
+      "customerId": "cust_1780912784404",
+      "grandTotal": 76999.56,
+      "sponsorshipAmount": 39500,
+      "payableAmount": 37499.56,
+      "status": "Paid",
+      "createdAt": "2026-06-08T10:00:25.208Z",
+      "items": [
+        {
+          "id": "item_inv_1780912825208_0",
+          "invoiceId": "inv_1780912825208",
+          "programName": "PfMP Core Certification Preparation",
+          "duration": "90 Days",
+          "price": 33474.58,
+          "gst": 5025.2,
+          "total": 38499.78
+        },
+        {
+          "id": "item_inv_1780912825208_1",
+          "invoiceId": "inv_1780912825208",
+          "programName": "PgMP Professional Blueprint Course",
+          "duration": "90 Days",
+          "price": 33474.58,
+          "gst": 5025.2,
+          "total": 38499.78
+        }
+      ]
+    }
+  ],
+  "emailTemplates": [
+    {
+      "id": "temp_1",
+      "templateName": "Premium Invoice Dispatch",
+      "subject": "Invoice #{{invoice_total}} Generated - {{company_name}} Plan",
+      "htmlContent": "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;\">\n  <div style=\"text-align: center; margin-bottom: 24px;\">\n    <h2>InvoiceMailer Pro Confirmation</h2>\n  </div>\n  <p>Dear <strong>{{customer_name}}</strong>,</p>\n  <p>We are pleased to share your invoice for services from <strong>{{company_name}}</strong>.</p>\n  \n  <div style=\"background-color: #f8fafc; padding: 16px; border-radius: 6px; margin: 20px 0;\">\n    <h3 style=\"margin-top: 0;\">Billing Overview</h3>\n    <table style=\"width: 100%; border-collapse: collapse;\">\n      <tr>\n        <td style=\"padding: 6px 0; color: #64748b;\">Customer Corporate:</td>\n        <td style=\"padding: 6px 0; text-align: right; font-weight: bold;\">{{company_name}}</td>\n      </tr>\n      <tr>\n        <td style=\"padding: 6px 0; color: #64748b;\">Grand Total Program:</td>\n        <td style=\"padding: 6px 0; text-align: right; font-weight: bold;\">₹{{invoice_total}}</td>\n      </tr>\n      <tr>\n        <td style=\"padding: 6px 0; color: #64748b;\">Sponsorship Discount:</td>\n        <td style=\"padding: 6px 0; text-align: right; font-weight: bold; color: #22c55e;\">₹{{sponsorship_amount}}</td>\n      </tr>\n      <tr style=\"border-top: 1px solid #cbd5e1; font-size: 1.1em;\">\n        <td style=\"padding: 8px 0; font-weight: bold; color: #0f172a;\">Total Payable Amount:</td>\n        <td style=\"padding: 8px 0; text-align: right; font-weight: bold; color: #7c3aed;\">₹{{payable_amount}}</td>\n      </tr>\n    </table>\n  </div>\n  \n  <p>Your programs: <br/> <em>{{program_list}}</em></p>\n  <p>Please download your official billing statement as PDF from our web client dashboard.</p>\n  \n  <div style=\"margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 0.9em; color: #64748b;\">\n    <p>Contact Us: {{company_phone}} | <a href=\"mailto:{{company_email}}\">{{company_email}}</a></p>\n    <div style=\"font-style: italic;\">{{email_signature}}</div>\n  </div>\n</div>",
+      "category": "Billing",
+      "createdAt": "2026-06-08T08:55:37.324Z"
+    },
+    {
+      "id": "temp_2",
+      "templateName": "Welcome & Onboarding Email",
+      "subject": "Welcome Package for {{program_name}} - {{customer_name}}",
+      "htmlContent": "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;\">\n  <h2>Welcome to the Onboarding Framework!</h2>\n  <p>Hello <strong>{{customer_name}}</strong>,</p>\n  <p>Congratulations on enrolling in our prestigious program: <strong>{{program_name}}</strong>.</p>\n  \n  <p>Over the next ninety days, we will guide you step-by-step through our curriculum to secure your professional accreditation. Our support representatives are available directly at <strong>{{company_phone}}</strong>.</p>\n  \n  <p>Your account records have been setup under <strong>{{customer_email}}</strong>. Feel free to contact our support on <strong>{{company_email}}</strong> should you require any administrative services.</p>\n  \n  <div style=\"margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 0.9em; color: #64748b;\">\n    <p>Visit us at: <a href=\"https://{{company_website}}\">{{company_website}}</a></p>\n    <div style=\"font-style: italic;\">{{email_signature}}</div>\n  </div>\n</div>",
+      "category": "Onboarding",
+      "createdAt": "2026-06-08T08:55:37.324Z"
+    },
+    {
+      "id": "temp_isuccessnode",
+      "templateName": "I-SUCCESSNODE Program Proposal",
+      "subject": "Thank you for your interest - Proposal from I-SUCCESSNODE",
+      "htmlContent": "<p>Dear <strong>{{customer_name}}</strong>,</p>\n<p>Greetings from <strong>I-SUCCESSNODE (OPC) Private Limited</strong>!</p>\n<p>It was a pleasure speaking with you earlier. We appreciate your interest in our professional training and development programs. As discussed, please find below the details of our proposal along with the course fee and next steps.</p>\n\n<h3 style=\"margin-top: 24px; color: #002d62; border-bottom: 2px solid #002d62; padding-bottom: 6px; font-size: 16px;\">About Our Services</h3>\n<p>At <strong>I-SUCCESSNODE</strong>, we focus on helping individuals strengthen their personal and professional skills to achieve greater success in their careers. Our training model is designed for <strong>working professionals and aspirants</strong> who are looking to upgrade their confidence, communication, leadership, and overall personality to stand out in their professional journey.</p>\n<p>We understand that every learner has unique goals, so we ensure that each participant receives <strong>personalized guidance from industry experts and experienced trainers</strong>. Our flexible learning approach allows you to learn at your own pace, from anywhere, and at any time — without disrupting your work-life balance.</p>\n<p>From enhancing self-confidence and public presence to mastering decision-making and professional behaviour, we are committed to guiding you step-by-step toward your personal growth and career advancement.</p>\n\n<p><strong>Flexible Learning:</strong><br/>\nLearners receive <strong>comprehensive study materials and recorded video sessions</strong> within 6 working hours of enrollment — enabling self-paced learning anytime, anywhere.</p>\n\n<p style=\"margin-top: 12px;\"><strong>Fast & Transparent Onboarding:</strong><br/>\nAfter enrollment, candidates receive an <strong>official invoice, study materials, and training access</strong> promptly.</p>\n\n<p style=\"margin-top: 12px;\"><strong>Structured Evaluation:</strong><br/>\nA <strong>Pre-Board Exam</strong> is scheduled within 24–48 hours to help learners assess their preparation before the final assessment.</p>\n\n<p style=\"margin-top: 12px;\"><strong>Recognized Certification:</strong><br/>\nUpon successful completion of the final online exam, learners receive a <strong>Final PC Softcopy Certificate</strong> verifying their successful training and certification status.</p>\n\n<p style=\"margin-top: 12px;\"><strong>Digital Convenience:</strong><br/>\nAll materials, exams, and certifications are delivered <strong>entirely online</strong> — ensuring quick, hassle-free access from any location.</p>\n\n<p style=\"margin-top: 12px;\"><strong>Flexible Course Duration:</strong><br/>\nThe complete program is designed to be completed within <strong>60 to 90 days</strong>, giving learners the flexibility to balance studies with their schedules.</p>\n\n<p style=\"margin-top: 12px;\"><strong>Fair Refund Policy:</strong><br/>\nA <strong>90% refund</strong> is available before attempting any exam. A minimal 10% fee is retained to cover digital resources and content access.</p>\n\n<p style=\"margin-top: 12px;\"><strong>Material Dispatch:</strong><br/>\nThe Initial PC Softcopy will be delivered within 48 to 72 hours after the Pre-Board Exam attempt. The initial soft copy will represent that the customer is under training, once they complete the final exam, then only they will be getting the final certificates.</p>\n\n<p style=\"margin-top: 12px;\"><strong>Commitment to Transparency:</strong><br/>\nAll processes — from enrollment to certification — are governed by clear, structured policies to ensure learners receive reliable, transparent service throughout their journey.</p>\n\n<h3 style=\"margin-top: 28px; color: #002d62; border-bottom: 2px solid #002d62; padding-bottom: 6px; font-size: 16px;\">Proposed Plan & Fee Details</h3>\n\n{{invoice_table}}\n\n<p>Once the payment is completed, our onboarding team will immediately begin your enrolment process. You’ll be connected with your dedicated mentor, who will assist you throughout your training journey.</p>\n\n<h3 style=\"margin-top: 28px; color: #002d62; border-bottom: 2px solid #002d62; padding-bottom: 6px; font-size: 16px;\">Next Steps</h3>\n<ol style=\"padding-left: 20px; font-size: 13px; line-height: 1.8; margin-top: 10px;\">\n  <li style=\"margin-bottom: 4px;\">Review this proposal and confirm your enrollment.</li>\n  <li style=\"margin-bottom: 4px;\">Fill out this order form: <a href=\"https://www.isuccessnode.com/contact.html\" style=\"color: #4f46e5; text-decoration: underline; font-weight: 500;\">https://www.isuccessnode.com/contact.html</a></li>\n  <li style=\"margin-bottom: 4px;\">Proceed with payment using your preferred payment method.</li>\n  <li style=\"margin-bottom: 4px;\">Receive your onboarding details and personalized session schedule within 24 working hours of payment confirmation.</li>\n</ol>\n\n<p style=\"margin-top: 16px;\">Should you have any questions or require assistance at any stage, please feel free to reach out. Our team is available to ensure you have a smooth and transparent onboarding experience.</p>\n<p>We look forward to welcoming you to <strong>I-SUCCESSNODE</strong>, where personal growth meets professional excellence.</p>",
+      "category": "Onboarding",
+      "createdAt": "2026-06-08T10:17:43.629Z"
+    }
+  ],
+  "emailLogs": [
+    {
+      "id": "log_1",
+      "customerId": "cust_1",
+      "invoiceId": "inv_101",
+      "templateId": "temp_1",
+      "email": "rahul.sharma@vertex-corp.io",
+      "subject": "Invoice #79000.00 Generated - Vertex Tech Corp Plan",
+      "status": "Delivered",
+      "sentAt": "2026-05-27T08:55:37.324Z",
+      "customerName": "Rahul Sharma",
+      "templateName": "Premium Invoice Dispatch",
+      "invoiceTotal": 79000
+    },
+    {
+      "id": "log_2",
+      "customerId": "cust_2",
+      "invoiceId": "inv_102",
+      "templateId": "temp_1",
+      "email": "anjali.n@cloudscale.net",
+      "subject": "Invoice #38500.00 Generated - CloudScale Inc Plan",
+      "status": "Sent",
+      "sentAt": "2026-06-05T08:55:37.324Z",
+      "customerName": "Anjali Nair",
+      "templateName": "Premium Invoice Dispatch",
+      "invoiceTotal": 38500
+    },
+    {
+      "id": "log_1780912687280",
+      "customerId": "cust_1780909898928",
+      "invoiceId": "inv_1780909937035",
+      "templateId": "temp_1",
+      "email": "rtyr@GMAIL.COM",
+      "subject": "Invoice #38499.78 Generated - HFGH Plan",
+      "status": "Delivered",
+      "sentAt": "2026-06-08T09:58:07.280Z",
+      "customerName": "rfthy",
+      "templateName": "Premium Invoice Dispatch",
+      "invoiceTotal": 38499.78
+    },
+    {
+      "id": "log_1780912853464",
+      "customerId": "cust_1780912784404",
+      "invoiceId": "inv_1780912825208",
+      "templateId": "temp_1",
+      "email": "admin@invoicemailer.pro",
+      "subject": "Invoice #76999.56 Generated - TEST Plan",
+      "status": "Delivered",
+      "sentAt": "2026-06-08T10:00:53.464Z",
+      "customerName": "SHRI",
+      "templateName": "Premium Invoice Dispatch",
+      "invoiceTotal": 76999.56
+    },
+    {
+      "id": "log_1780912899761",
+      "customerId": "cust_1780912784404",
+      "invoiceId": "inv_1780912825208",
+      "templateId": "temp_1",
+      "email": "admin@invoicemailer.pro",
+      "subject": "Invoice #76999.56 Generated - TEST Plan",
+      "status": "Delivered",
+      "sentAt": "2026-06-08T10:01:39.761Z",
+      "customerName": "SHRI",
+      "templateName": "Premium Invoice Dispatch",
+      "invoiceTotal": 76999.56
+    },
+    {
+      "id": "log_1780912927827",
+      "customerId": "cust_1780912784404",
+      "invoiceId": "inv_1780912825208",
+      "templateId": "temp_1",
+      "email": "admin@invoicemailer.pro",
+      "subject": "Invoice #76999.56 Generated - TEST Plan",
+      "status": "Delivered",
+      "sentAt": "2026-06-08T10:02:07.827Z",
+      "customerName": "SHRI",
+      "templateName": "Premium Invoice Dispatch",
+      "invoiceTotal": 76999.56
+    },
+    {
+      "id": "log_1780913433000",
+      "customerId": "cust_1780912784404",
+      "invoiceId": "inv_1780912825208",
+      "templateId": "temp_1",
+      "email": "admin@invoicemailer.pro",
+      "subject": "Invoice #76999.56 Generated - TEST Plan",
+      "status": "Delivered",
+      "sentAt": "2026-06-08T10:10:33.000Z",
+      "customerName": "SHRI",
+      "templateName": "Premium Invoice Dispatch",
+      "invoiceTotal": 76999.56
+    }
+  ],
+  "settings": {
+    "companyName": "InvoiceMailer Pro Solutions",
+    "companyPhone": "+91 80001 09999",
+    "companyEmail": "finance@invoicemailer.pro",
+    "website": "https://invoicemailer.pro",
+    "logoUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=120&h=120&q=80",
+    "footerText": "InvoiceMailer Pro Ltd, Bandra Kurla Complex, Mumbai, MH, 400051",
+    "emailSignature": "With professional regard,<br/><strong>Team InvoiceMailer Pro Operations</strong>"
+  }
+}

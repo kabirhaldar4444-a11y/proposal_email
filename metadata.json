@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Remix: Customer Proposal \u0026 Invoice Mailer",
+  "description": "A professional web application for managing customers, creating custom course proposals and invoices, calculating sponsorships and discounts, and generating templates.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
