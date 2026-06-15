@@ -7,7 +7,8 @@ import { useState, useEffect, useRef } from 'react';
 import { 
   Users, DollarSign, Mail, FileText, Settings, 
   Send, LogOut, Sparkles, X, Plus, Trash2, Printer, 
-  Download, Copy, HelpCircle, Info, Percent, Gift, Award, Check, User as UserIcon, RefreshCw
+  Download, Copy, HelpCircle, Info, Percent, Gift, Award, Check, User as UserIcon, RefreshCw,
+  Edit3
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { Customer, Invoice, EmailTemplate, EmailLog, User, CompanySettings, InvoiceItem, InvoiceStatus } from '../types';
@@ -111,6 +112,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
   const [newTemplateName, setNewTemplateName] = useState('');
   const [newTemplateSubject, setNewTemplateSubject] = useState('');
   const [newTemplateContent, setNewTemplateContent] = useState('');
+  const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null);
 
   // Clean Gmail clipboard copy direct integration state
   const [cleanGmailMode, setCleanGmailMode] = useState<boolean>(true); // strips out boilerplate headers/footers for a direct Ctrl+V paste
@@ -162,7 +164,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
     }
   };
 
-  const handleCreateTemplate = async () => {
+  const handleSaveTemplate = async () => {
     if (!newTemplateName.trim()) {
       onNotify('Please enter a Template name.', 'error');
       return;
@@ -177,25 +179,75 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
     }
 
     try {
-      const created = await api.templates.create({
-        templateName: newTemplateName.trim(),
-        subject: newTemplateSubject.trim(),
-        htmlContent: newTemplateContent.trim(),
-        category: 'Custom'
-      });
-      // Prepend to templates array
-      setTemplates(prev => [created, ...prev]);
-      setSelectedTemplateId(created.id);
-      setIsCreateTemplateOpen(false);
-      
-      // Clear forms
-      setNewTemplateName('');
-      setNewTemplateSubject('');
-      setNewTemplateContent('');
-      
-      onNotify(`Template "${created.templateName}" created and loaded successfully!`, 'success');
+      if (editingTemplateId) {
+        const updated = await api.templates.update(editingTemplateId, {
+          templateName: newTemplateName.trim(),
+          subject: newTemplateSubject.trim(),
+          htmlContent: newTemplateContent.trim(),
+          category: 'Custom'
+        });
+        setTemplates(prev => prev.map(t => t.id === editingTemplateId ? updated : t));
+        setIsCreateTemplateOpen(false);
+        setEditingTemplateId(null);
+        
+        // Clear forms
+        setNewTemplateName('');
+        setNewTemplateSubject('');
+        setNewTemplateContent('');
+        
+        onNotify(`Template "${updated.templateName}" updated successfully!`, 'success');
+      } else {
+        const created = await api.templates.create({
+          templateName: newTemplateName.trim(),
+          subject: newTemplateSubject.trim(),
+          htmlContent: newTemplateContent.trim(),
+          category: 'Custom'
+        });
+        // Prepend to templates array
+        setTemplates(prev => [created, ...prev]);
+        setSelectedTemplateId(created.id);
+        setIsCreateTemplateOpen(false);
+        
+        // Clear forms
+        setNewTemplateName('');
+        setNewTemplateSubject('');
+        setNewTemplateContent('');
+        
+        onNotify(`Template "${created.templateName}" created and loaded successfully!`, 'success');
+      }
     } catch (err) {
-      onNotify('Failed to create new template.', 'error');
+      onNotify('Failed to save template.', 'error');
+    }
+  };
+
+  const handleOpenEditTemplate = (e: React.MouseEvent, t: EmailTemplate) => {
+    e.stopPropagation();
+    setEditingTemplateId(t.id);
+    setNewTemplateName(t.templateName);
+    setNewTemplateSubject(t.subject);
+    setNewTemplateContent(t.htmlContent);
+    setIsCreateTemplateOpen(true);
+  };
+
+  const handleDeleteTemplate = async (e: React.MouseEvent, id: string, name: string) => {
+    e.stopPropagation();
+    if (!window.confirm(`Are you sure you want to delete template "${name}"?`)) {
+      return;
+    }
+    try {
+      await api.templates.delete(id);
+      setTemplates(prev => prev.filter(t => t.id !== id));
+      if (selectedTemplateId === id) {
+        const remaining = templates.filter(t => t.id !== id);
+        if (remaining.length > 0) {
+          setSelectedTemplateId(remaining[0].id);
+        } else {
+          setSelectedTemplateId('');
+        }
+      }
+      onNotify('Template successfully removed.', 'success');
+    } catch (err) {
+      onNotify('Error deleting template.', 'error');
     }
   };
 
@@ -1233,7 +1285,13 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                 <label className="text-[10px] text-slate-400 uppercase font-bold block">Selected Framework Layout</label>
                 <button
                   type="button"
-                  onClick={() => setIsCreateTemplateOpen(true)}
+                  onClick={() => {
+                    setEditingTemplateId(null);
+                    setNewTemplateName('');
+                    setNewTemplateSubject('');
+                    setNewTemplateContent('');
+                    setIsCreateTemplateOpen(true);
+                  }}
                   className="px-2.5 py-0.5 text-[9px] uppercase font-bold tracking-wider bg-violet-600/30 hover:bg-violet-600 border border-violet-500/50 hover:border-violet-400 text-violet-300 hover:text-white rounded-md cursor-pointer transition-all flex items-center gap-1"
                 >
                   <Plus className="w-2.5 h-2.5" />
@@ -1241,23 +1299,58 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                 </button>
               </div>
               <div className="grid grid-cols-3 gap-2">
-                {templates.map((t) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedTemplateId(t.id);
-                      onNotify(`Switched to the ${t.templateName}!`, 'success');
-                    }}
-                    className={`px-3 py-2 text-left rounded-xl border text-[10px] font-bold tracking-tight truncate cursor-pointer transition-all ${
-                      selectedTemplateId === t.id
-                        ? 'bg-violet-600 border-violet-600 text-white shadow-lg shadow-violet-500/20'
-                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    {t.templateName.replace('I-SUCCESSNODE ', '')}
-                  </button>
-                ))}
+                {templates.map((t) => {
+                  const isSelected = selectedTemplateId === t.id;
+                  return (
+                    <div
+                      key={t.id}
+                      className={`relative group flex items-center justify-between rounded-xl border text-[10px] font-bold tracking-tight transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-violet-600/90 border-violet-500 text-white shadow-lg shadow-violet-500/20'
+                          : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                      }`}
+                      onClick={() => {
+                        setSelectedTemplateId(t.id);
+                        onNotify(`Switched to the ${t.templateName}!`, 'success');
+                      }}
+                    >
+                      <span className="pl-3 pr-2 py-2.5 truncate select-none flex-1">
+                        {t.templateName.replace('I-SUCCESSNODE ', '')}
+                      </span>
+                      
+                      <div className={`flex items-center gap-1 pr-1.5 transition-opacity duration-200 ${
+                        isSelected 
+                          ? 'opacity-100' 
+                          : 'opacity-0 group-hover:opacity-100'
+                      }`}>
+                        <button
+                          type="button"
+                          onClick={(e) => handleOpenEditTemplate(e, t)}
+                          className={`p-1 rounded-md transition-colors ${
+                            isSelected 
+                              ? 'hover:bg-violet-500 text-violet-200 hover:text-white' 
+                              : 'hover:bg-slate-800 text-slate-500 hover:text-slate-200'
+                          }`}
+                          title="Edit Template"
+                        >
+                          <Edit3 className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => handleDeleteTemplate(e, t.id, t.templateName)}
+                          className={`p-1 rounded-md transition-colors ${
+                            isSelected 
+                              ? 'hover:bg-rose-600 text-violet-200 hover:text-white' 
+                              : 'hover:bg-rose-950/45 text-slate-500 hover:text-rose-450'
+                          }`}
+                          title="Delete Template"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -1419,8 +1512,12 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
 
             <div>
               <h4 className="text-sm font-extrabold text-white uppercase tracking-tight flex items-center gap-1.5">
-                <Plus className="w-4 h-4 text-violet-400" />
-                Create New Custom Email Template
+                {editingTemplateId ? (
+                  <Edit3 className="w-4 h-4 text-violet-400" />
+                ) : (
+                  <Plus className="w-4 h-4 text-violet-400" />
+                )}
+                {editingTemplateId ? 'Edit Custom Email Template' : 'Create New Custom Email Template'}
               </h4>
               <p className="text-[10px] text-slate-500 mt-0.5">Define your custom proposal message. Placeholders like &#123;&#123;customer_name&#125;&#125;, &#123;&#123;invoice_table&#125;&#125; will be automatically parsed.</p>
             </div>
@@ -1471,10 +1568,10 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
               </button>
               <button
                 type="button"
-                onClick={handleCreateTemplate}
+                onClick={handleSaveTemplate}
                 className="px-4 py-2 text-xs font-bold bg-gradient-to-tr from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-xl cursor-pointer shadow-lg shadow-violet-500/10"
               >
-                Add Template Layout
+                {editingTemplateId ? 'Save Changes' : 'Add Template Layout'}
               </button>
             </div>
 
