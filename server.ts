@@ -723,8 +723,8 @@ app.post('/api/send-email', async (req, res) => {
         <tr style="background-color: #002d62; color: #ffffff;">
           <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase;">Selected Programs</th>
           <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase;">Duration</th>
-          <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase;">Price</th>
-          <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase;">GST</th>
+          <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase;">Price (Excl. Tax)</th>
+          <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase;">GST 18% in Rs</th>
           <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase;">Total</th>
         </tr>
       </thead>

@@ -89,6 +89,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
     programName: string;
     duration: string;
     price: number; // Base rate excluding GST and Discount
+    total: number; // Inclusive rate (Total Price entered by user)
     discountPercent: number; // individual discount %
     gstPercent: number; // individual GST %
   }>>([
@@ -96,6 +97,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
       programName: 'PfMP Core Certification Preparation',
       duration: '90 Days',
       price: 33474.58,
+      total: 39500.00,
       discountPercent: 0,
       gstPercent: 18
     }
@@ -295,7 +297,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
   const handleAddCourseRow = () => {
     setCourseRows(prev => [
       ...prev,
-      { programName: '', duration: '90 Days', price: 0, discountPercent: 0, gstPercent: 18 }
+      { programName: '', duration: '90 Days', price: 0, total: 0, discountPercent: 0, gstPercent: 18 }
     ]);
   };
 
@@ -325,8 +327,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
               <th style="padding: 10px; border: 1.5px solid #000000; text-align: left; font-weight: bold; font-size: 12px; text-transform: uppercase;">Selected Programs</th>
               <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 12px; text-transform: uppercase;">Duration</th>
               <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 12px; text-transform: uppercase;">Price (Excl. Tax)</th>
-              <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 12px; text-transform: uppercase;">GST %</th>
-              <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 12px; text-transform: uppercase;">GST Amount (Rs)</th>
+              <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 12px; text-transform: uppercase;">GST 18% in Rs</th>
               <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 12px; text-transform: uppercase;">Total</th>
             </tr>
           </thead>
@@ -336,7 +337,6 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
     courseRowsCalculated.forEach((item) => {
       const isComp = !item.price || item.price === 0 || item.programName.toLowerCase().includes('complementary') || item.programName.toLowerCase().includes('complimentary');
       const priceVal = isComp ? '-' : '₹' + Number(item.price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      const gstPercentVal = isComp ? '-' : `${item.gstPercent}%`;
       const gstAmtVal = isComp ? '-' : '₹' + Number(item.gstAmount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       const totalVal = '₹' + Number(item.total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -350,7 +350,6 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
             <td style="padding: 10px; border: 1.5px solid #000000; text-align: left; vertical-align: top;">${progNameCellContent}</td>
             <td style="padding: 10px; border: 1.5px solid #000000; text-align: center; vertical-align: top;">${item.duration || '90 Days'}</td>
             <td style="padding: 10px; border: 1.5px solid #000000; text-align: center; vertical-align: top;">${priceVal}</td>
-            <td style="padding: 10px; border: 1.5px solid #000000; text-align: center; vertical-align: top;">${gstPercentVal}</td>
             <td style="padding: 10px; border: 1.5px solid #000000; text-align: center; vertical-align: top; font-weight: bold;">${gstAmtVal}</td>
             <td style="padding: 10px; border: 1.5px solid #000000; text-align: center; vertical-align: top; font-weight: bold;">${totalVal}</td>
           </tr>
@@ -359,7 +358,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
 
     ht += `
           <tr style="text-align: center;">
-            <td colspan="5" style="background-color: #f1f5f9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Subtotal (excl. Tax)</td>
+            <td colspan="4" style="background-color: #f1f5f9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Subtotal (excl. Tax)</td>
             <td style="padding: 10px; border: 1.5px solid #000000; font-weight: bold; text-align: center; background-color: #ffffff; font-size: 12px;">₹${rawBaseSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
     `;
@@ -367,7 +366,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
     if (calculatedGstValue > 0) {
       ht += `
           <tr style="text-align: center;">
-            <td colspan="5" style="background-color: #f1f5f9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Combined GST Tax (Adding Rupees)</td>
+            <td colspan="4" style="background-color: #f1f5f9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Combined GST Tax (Adding Rupees)</td>
             <td style="padding: 10px; border: 1.5px solid #000000; font-weight: bold; text-align: center; background-color: #ffffff; font-size: 12px; color: #000000;">₹${calculatedGstValue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
       `;
@@ -377,7 +376,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
       const avgDiscPercent = rawBaseSubtotal > 0 ? Math.round((discountReductionAmount / rawBaseSubtotal) * 100) : 0;
       ht += `
           <tr style="text-align: center;">
-            <td colspan="5" style="background-color: #f1f5f9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Combined Rebate Discount (${avgDiscPercent}%)</td>
+            <td colspan="4" style="background-color: #f1f5f9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Combined Rebate Discount (${avgDiscPercent}%)</td>
             <td style="padding: 10px; border: 1.5px solid #000000; font-weight: bold; text-align: center; background-color: #ffffff; font-size: 12px; color: #000000;">-₹${discountReductionAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
       `;
@@ -385,7 +384,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
 
     ht += `
           <tr style="text-align: center;">
-            <td colspan="5" style="background-color: #e07a22; color: #ffffff; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Grand Total (incl. GST)</td>
+            <td colspan="4" style="background-color: #e07a22; color: #ffffff; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Grand Total (incl. GST)</td>
             <td style="padding: 10px; border: 1.5px solid #000000; font-weight: bold; text-align: center; background-color: #ffffff; font-size: 12px; font-weight: bold;">₹${computedGrandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
     `;
@@ -393,11 +392,11 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
     if (grandDiscountPercent > 0) {
       ht += `
           <tr style="text-align: center;">
-            <td colspan="5" style="background-color: #fafaf9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Grand Discount (${grandDiscountPercent}%)</td>
+            <td colspan="4" style="background-color: #fafaf9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Grand Discount (${grandDiscountPercent}%)</td>
             <td style="padding: 10px; border: 1.5px solid #000000; font-weight: bold; text-align: center; background-color: #ffffff; font-size: 12px; color: #000000;">-₹${grandDiscountAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
           <tr style="text-align: center;">
-            <td colspan="5" style="background-color: #f1f5f9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Grand Total (After Discount)</td>
+            <td colspan="4" style="background-color: #f1f5f9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Grand Total (After Discount)</td>
             <td style="padding: 10px; border: 1.5px solid #000000; font-weight: bold; text-align: center; background-color: #ffffff; font-size: 12px; font-weight: bold; color: #000000;">₹${grandTotalAfterDiscount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
       `;
@@ -406,7 +405,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
     if (applySponsorship && calculatedSponsorshipBenefit > 0) {
       ht += `
           <tr style="text-align: center;">
-            <td colspan="5" style="background-color: #e5e7eb; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Sponsorship Coverage (50%)</td>
+            <td colspan="4" style="background-color: #e5e7eb; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Sponsorship Coverage (50%)</td>
             <td style="padding: 10px; border: 1.5px solid #000000; font-weight: bold; text-align: center; background-color: #ffffff; font-size: 12px; color: #047857;">₹${calculatedSponsorshipBenefit.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
       `;
@@ -414,7 +413,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
 
     ht += `
           <tr style="text-align: center; background-color: #fffbeb;">
-            <td colspan="5" style="background-color: #002d62; color: #ffffff; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 13px; text-transform: uppercase;">Total Payable Amount</td>
+            <td colspan="4" style="background-color: #002d62; color: #ffffff; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 13px; text-transform: uppercase;">Total Payable Amount</td>
             <td style="padding: 10px; border: 1.5px solid #000000; font-weight: bold; text-align: center; background-color: #ffffff; font-size: 14px; color: #b45309; border: 2.5px solid #002d62;">₹${calculatedNetPayable.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
         </tbody>
@@ -541,13 +540,19 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
 
     // Set course items
     if (inv.items && inv.items.length > 0) {
-      setCourseRows(inv.items.map(it => ({
-        programName: it.programName,
-        duration: it.duration,
-        price: it.price || 0,
-        discountPercent: (it as any).discountPercent || 0,
-        gstPercent: (it as any).gstPercent || 18
-      })));
+      setCourseRows(inv.items.map(it => {
+        const gstPct = (it as any).gstPercent || 18;
+        const basePrice = it.price || 0;
+        const total = it.total || Math.round((basePrice * (1 + gstPct / 100)) * 100) / 100;
+        return {
+          programName: it.programName,
+          duration: it.duration,
+          price: basePrice,
+          total: total,
+          discountPercent: (it as any).discountPercent || 0,
+          gstPercent: gstPct
+        };
+      }));
     }
 
     // Attempt to guess customization
@@ -803,12 +808,11 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
     doc.setFont('Helvetica', 'bold');
     doc.setFontSize(8);
     
-    // Position columns perfectly (X positions: 17, 85, 110, 131, 149, 175)
+    // Position columns perfectly (X positions: 17, 90, 118, 146, 175)
     doc.text('SELECTED TRAINING PROGRAM', 17, 49);
-    doc.text('DURATION', 85, 49);
-    doc.text('BASE RATE', 110, 49);
-    doc.text('GST %', 131, 49);
-    doc.text('GST (RS)', 149, 49);
+    doc.text('DURATION', 90, 49);
+    doc.text('BASE RATE', 118, 49);
+    doc.text('GST 18% (RS)', 146, 49);
     doc.text('TOTAL PRICE', 175, 49);
 
     let startY = 58;
@@ -823,7 +827,6 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
 
       const isComp = !item.price || item.price === 0 || item.programName.toLowerCase().includes('complementary') || item.programName.toLowerCase().includes('complimentary');
       const prStr = isComp ? '-' : 'INR ' + Math.round(item.price).toLocaleString('en-IN');
-      const gstPctStr = isComp ? '-' : `${item.gstPercent}%`;
       const gstAmtStr = isComp ? '-' : 'INR ' + Math.round(item.gstAmount || 0).toLocaleString('en-IN');
       const totalStr = 'INR ' + Math.round(item.total || 0).toLocaleString('en-IN');
 
@@ -831,14 +834,13 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
       doc.text(item.programName.substring(0, 32), 17, startY);
       
       doc.setFont('Helvetica', 'normal');
-      doc.text(item.duration, 85, startY);
-      doc.text(prStr, 110, startY);
-      doc.text(gstPctStr, 131, startY);
+      doc.text(item.duration, 90, startY);
+      doc.text(prStr, 118, startY);
       
       // Separate bold styling & color for GST (Rs) in PDF
       doc.setFont('Helvetica', 'bold');
       doc.setTextColor(15, 23, 42); // default charcoal color instead of purple
-      doc.text(gstAmtStr, 149, startY);
+      doc.text(gstAmtStr, 146, startY);
       
       // Total price column
       doc.setFont('Helvetica', 'bold');
@@ -1026,7 +1028,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                   setCompanyName('');
                   setDesignation('');
                   setAddress('');
-                  setCourseRows([{ programName: '', duration: '90 Days', price: 0, discountPercent: 0, gstPercent: 18 }]);
+                  setCourseRows([{ programName: '', duration: '90 Days', price: 0, total: 0, discountPercent: 0, gstPercent: 18 }]);
                   setApplySponsorship(false);
                   setSponsorshipPercent(0);
                   setGrandDiscountPercent(0);
@@ -1141,14 +1143,28 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="text-[9px] text-amber-400 uppercase font-bold block mb-1">Base Price</label>
+                    <label className="text-[9px] text-slate-400 uppercase font-bold block mb-1">Total Price (Incl. GST)</label>
                     <div className="relative">
                       <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-500 text-[10px] font-bold">₹</span>
                       <input
                         type="number"
                         placeholder="0"
-                        value={row.price || ''}
-                        onChange={(e) => handleUpdateRowField(idx, 'price', Number(e.target.value))}
+                        value={row.total || ''}
+                        onChange={(e) => {
+                          const enteredTotal = Number(e.target.value) || 0;
+                          const gstPct = row.gstPercent || 18;
+                          const calculatedBase = Math.round((enteredTotal / (1 + gstPct / 100)) * 100) / 100;
+                          
+                          setCourseRows(prev => {
+                            const copy = [...prev];
+                            copy[idx] = { 
+                              ...copy[idx], 
+                              total: enteredTotal,
+                              price: calculatedBase
+                            };
+                            return copy;
+                          });
+                        }}
                         className="w-full text-xs font-bold font-mono bg-slate-900 border border-slate-800 rounded-lg py-1.5 pl-5 pr-1 text-slate-100 outline-none focus:border-violet-500 text-right"
                       />
                     </div>
@@ -1175,7 +1191,20 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                       min="0"
                       max="100"
                       value={row.gstPercent}
-                      onChange={(e) => handleUpdateRowField(idx, 'gstPercent', Number(e.target.value))}
+                      onChange={(e) => {
+                        const newGstPct = Number(e.target.value) || 0;
+                        const calculatedBase = Math.round((row.total / (1 + newGstPct / 100)) * 100) / 100;
+                        
+                        setCourseRows(prev => {
+                          const copy = [...prev];
+                          copy[idx] = { 
+                            ...copy[idx], 
+                            gstPercent: newGstPct,
+                            price: calculatedBase
+                          };
+                          return copy;
+                        });
+                      }}
                       className="w-full text-xs font-mono bg-slate-900 border border-slate-800 rounded-lg py-1.5 px-1 text-slate-100 outline-none focus:border-violet-500 text-center"
                     />
                   </div>
@@ -1193,6 +1222,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
 
                   {/* MINI INLINE TAX COMPUTATION LABEL DESCRIPTION */}
                   <div className="md:col-span-12 flex justify-between bg-slate-950/40 px-2 py-1 rounded-md text-[9px] text-slate-400 font-mono">
+                    <span>Base Price: <strong>₹{row.price?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>
                     <span>Rebate Disc: <strong>₹{row.discountAmount?.toLocaleString('en-IN')}</strong></span>
                     <span>GST: <strong>₹{row.gstAmount?.toLocaleString('en-IN')}</strong></span>
                     <span>Row Net: <strong>₹{row.total?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>
