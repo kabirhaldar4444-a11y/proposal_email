@@ -357,8 +357,8 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
   // --- DYNAMIC PREVIEW COMPILING ---
   const generateInvoiceTableHtml = () => {
     let ht = `
-      <div style="width: 100%; overflow-x: auto; margin: 20px 0; -webkit-overflow-scrolling: touch; text-align: center;">
-        <table style="width: 55%; min-width: 320px; margin: 0 auto; border-collapse: collapse; border: 1.5px solid #000000; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #000000;">
+      <div style="width: 100%; overflow-x: auto; margin: 20px 0; -webkit-overflow-scrolling: touch; text-align: left;">
+        <table style="width: 55%; min-width: 320px; margin: 20px 0; border-collapse: collapse; border: 1.5px solid #000000; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #000000;">
           <thead>
             <tr style="background-color: #002d62; color: #ffffff;">
               <th style="padding: 10px; border: 1.5px solid #000000; text-align: left; font-weight: bold; font-size: 12px; text-transform: uppercase;">Selected Programs</th>
@@ -711,9 +711,8 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
       .trim()
       .substring(0, 150);
 
-    // 3. Simple instruction body for Gmail
-    const directProposalBody = `[Click in the compose area, select all, and press Ctrl+V to paste the entire rich HTML proposal here]`;
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(candidateEmail)}&su=${encodeURIComponent(cleanSub)}&body=${encodeURIComponent(directProposalBody)}`;
+    // 3. Open Gmail Composer (copied proposal can be pasted directly using Ctrl+V)
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(candidateEmail)}&su=${encodeURIComponent(cleanSub)}`;
     
     // Save state to ledger logging history
     await handleSaveProposalToHistory();

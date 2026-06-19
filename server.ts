@@ -247,8 +247,8 @@ The complete program is designed to be completed within 60 to 90 days, giving le
 <p style="margin-top: 12px;"><strong>Fair Refund Policy:</strong><br/>
 A 90% refund is available before attempting any exam. A minimal 10% fee is retained to cover digital resources and content access.</p>
 
-<p style="margin-top: 12px;"><strong>Material Dispatch</strong><br/>
-The Initial PC Softcopy will be delivered within 48 to 72 hours after the Pre-Board Exam attempt. The initial soft copy will represent that the customer is under training, once they complete the final exam, then only they will be getting the final certificates.</p>
+<p style="margin-top: 12px;"><strong>Material Dispatch:</strong><br/>
+The Initial PC Softcopy will be delivered within 48 to 72 hours after the Pre-Board Exam attempt. This initial soft copy represents that the customer is in training; the final certificate will be issued once the final exam is successfully completed.</p>
 
 <p style="margin-top: 12px;"><strong>Commitment to Transparency:</strong><br/>
 All processes — from enrollment to certification — are governed by clear, structured policies to ensure learners receive reliable, transparent service throughout their journey.</p>
@@ -257,7 +257,7 @@ All processes — from enrollment to certification — are governed by clear, st
 
 {{invoice_table}}
 
-<p>Once the payment is completed, our onboarding team will immediately begin your enrolment process. You’ll be connected with your dedicated mentor, who will assist you throughout your training journey.</p>
+<p>Once the payment is completed, our onboarding team will immediately begin your enrollment process. You’ll be connected with your dedicated mentor, who will assist you throughout your training journey.</p>
 
 <h3 style="margin-top: 28px; color: #002d62; border-bottom: 2px solid #002d62; padding-bottom: 6px; font-size: 16px;">Next Steps</h3>
 <ol style="padding-left: 20px; font-size: 13px; line-height: 1.8; margin-top: 10px;">
@@ -729,7 +729,7 @@ app.post('/api/send-email', async (req, res) => {
 
   // Dynamic High-Fidelity HTML Table for I-SUCCESSNODE styling
   let invoiceTableHtml = `
-    <table style="width: 55%; margin: 20px auto; min-width: 320px; border-collapse: collapse; border: 1.5px solid #000000; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #000000;">
+    <table style="width: 55%; margin: 20px 0; min-width: 320px; border-collapse: collapse; border: 1.5px solid #000000; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #000000;">
       <thead>
         <tr style="background-color: #002d62; color: #ffffff;">
           <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase;">Selected Programs</th>
