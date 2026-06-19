@@ -214,7 +214,7 @@ const initialDb = {
       createdAt: new Date().toISOString()
     },
     {
-      id: 'temp_isuccessnode',
+      id: 'temp_isuccessnode_proposal',
       templateName: 'I-SUCCESSNODE Program Proposal',
       subject: 'Thank you for your interest - Proposal from I-SUCCESSNODE',
       htmlContent: `<p>Dear <strong>{{customer_name}}</strong>,</p>
@@ -227,27 +227,27 @@ const initialDb = {
 <p>From enhancing self-confidence and public presence to mastering decision-making and professional behaviour, we are committed to guiding you step-by-step toward your personal growth and career advancement.</p>
 
 <p><strong>Flexible Learning:</strong><br/>
-Learners receive <strong>comprehensive study materials and recorded video sessions</strong> within 6 working hours of enrollment — enabling self-paced learning anytime, anywhere.</p>
+Learners receive comprehensive study materials and recorded video sessions within 6 working hours of enrollment — enabling self-paced learning anytime, anywhere.</p>
 
 <p style="margin-top: 12px;"><strong>Fast & Transparent Onboarding:</strong><br/>
-After enrollment, candidates receive an <strong>official invoice, study materials, and training access</strong> promptly.</p>
+After enrollment, candidates receive an official invoice, study materials, and training access promptly.</p>
 
 <p style="margin-top: 12px;"><strong>Structured Evaluation:</strong><br/>
-A <strong>Pre-Board Exam</strong> is scheduled within 24–48 hours to help learners assess their preparation before the final assessment.</p>
+A Pre-Board Exam is scheduled within 24–48 hours to help learners assess their preparation before the final assessment.</p>
 
 <p style="margin-top: 12px;"><strong>Recognized Certification:</strong><br/>
-Upon successful completion of the final online exam, learners receive a <strong>Final PC Softcopy Certificate</strong> verifying their successful training and certification status.</p>
+Upon successful completion of the final online exam, learners receive a Final PC Softcopy Certificate verifying their successful training and certification status.</p>
 
 <p style="margin-top: 12px;"><strong>Digital Convenience:</strong><br/>
-All materials, exams, and certifications are delivered <strong>entirely online</strong> — ensuring quick, hassle-free access from any location.</p>
+All materials, exams, and certifications are delivered entirely online — ensuring quick, hassle-free access from any location.</p>
 
 <p style="margin-top: 12px;"><strong>Flexible Course Duration:</strong><br/>
-The complete program is designed to be completed within <strong>60 to 90 days</strong>, giving learners the flexibility to balance studies with their schedules.</p>
+The complete program is designed to be completed within 60 to 90 days, giving learners the flexibility to balance studies with their schedules.</p>
 
 <p style="margin-top: 12px;"><strong>Fair Refund Policy:</strong><br/>
-A <strong>90% refund</strong> is available before attempting any exam. A minimal 10% fee is retained to cover digital resources and content access.</p>
+A 90% refund is available before attempting any exam. A minimal 10% fee is retained to cover digital resources and content access.</p>
 
-<p style="margin-top: 12px;"><strong>Material Dispatch:</strong><br/>
+<p style="margin-top: 12px;"><strong>Material Dispatch</strong><br/>
 The Initial PC Softcopy will be delivered within 48 to 72 hours after the Pre-Board Exam attempt. The initial soft copy will represent that the customer is under training, once they complete the final exam, then only they will be getting the final certificates.</p>
 
 <p style="margin-top: 12px;"><strong>Commitment to Transparency:</strong><br/>
@@ -278,26 +278,26 @@ All processes — from enrollment to certification — are governed by clear, st
       id: 'log_1',
       customerId: 'cust_1',
       invoiceId: 'inv_101',
-      templateId: 'temp_1',
+      templateId: 'temp_isuccessnode_proposal',
       email: 'rahul.sharma@vertex-corp.io',
-      subject: 'Invoice #79000.00 Generated - Vertex Tech Corp Plan',
+      subject: 'Thank you for your interest - Proposal from I-SUCCESSNODE',
       status: 'Delivered',
       sentAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
       customerName: 'Rahul Sharma',
-      templateName: 'Premium Invoice Dispatch',
-      invoiceTotal: 79000
+      templateName: 'I-SUCCESSNODE Program Proposal',
+      invoiceTotal: 39500.00
     },
     {
       id: 'log_2',
       customerId: 'cust_2',
       invoiceId: 'inv_102',
-      templateId: 'temp_1',
+      templateId: 'temp_isuccessnode_proposal',
       email: 'anjali.n@cloudscale.net',
-      subject: 'Invoice #38500.00 Generated - CloudScale Inc Plan',
+      subject: 'Thank you for your interest - Proposal from I-SUCCESSNODE',
       status: 'Sent',
       sentAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
       customerName: 'Anjali Nair',
-      templateName: 'Premium Invoice Dispatch',
+      templateName: 'I-SUCCESSNODE Program Proposal',
       invoiceTotal: 38500
     }
   ],
@@ -322,13 +322,24 @@ function readDb() {
     const data = fs.readFileSync(DB_FILE, 'utf8');
     const db = JSON.parse(data);
 
-    // Auto-migrate database: inject temp_isuccessnode template if it is missing
-    if (db && db.emailTemplates && !db.emailTemplates.some((t: any) => t.id === 'temp_isuccessnode')) {
-      const isuccTemplate = initialDb.emailTemplates.find(t => t.id === 'temp_isuccessnode');
-      if (isuccTemplate) {
-        db.emailTemplates.push(isuccTemplate);
+    // Auto-migrate database: clean up old and inject new template
+    if (db && db.emailTemplates) {
+      // Filter out old template
+      const filteredTemplates = db.emailTemplates.filter((t: any) => t.id !== 'temp_isuccessnode');
+      let changed = db.emailTemplates.length !== filteredTemplates.length;
+      
+      if (!filteredTemplates.some((t: any) => t.id === 'temp_isuccessnode_proposal')) {
+        const isuccTemplate = initialDb.emailTemplates.find(t => t.id === 'temp_isuccessnode_proposal');
+        if (isuccTemplate) {
+          filteredTemplates.push(isuccTemplate);
+          changed = true;
+        }
+      }
+      
+      if (changed) {
+        db.emailTemplates = filteredTemplates;
         fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
-        console.log('[Database Migration] Succesfully injected I-SUCCESSNODE proposal template into db.json.');
+        console.log('[Database Migration] Succesfully updated templates in db.json.');
       }
     }
     return db;
@@ -718,7 +729,7 @@ app.post('/api/send-email', async (req, res) => {
 
   // Dynamic High-Fidelity HTML Table for I-SUCCESSNODE styling
   let invoiceTableHtml = `
-    <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; margin: 20px 0; color: #000000;">
+    <table style="width: 55%; margin: 20px auto; min-width: 320px; border-collapse: collapse; border: 1.5px solid #000000; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #000000;">
       <thead>
         <tr style="background-color: #002d62; color: #ffffff;">
           <th style="padding: 10px; border: 1.5px solid #000000; text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase;">Selected Programs</th>

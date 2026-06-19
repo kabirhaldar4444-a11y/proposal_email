@@ -40,6 +40,30 @@ const VARIABLE_TOKENS: VariableToken[] = [
 ];
 
 export default function EmailTemplates({ onNotify, onRefreshData }: EmailTemplatesProps) {
+  const handleDrop = (
+    e: React.DragEvent<HTMLTextAreaElement | HTMLInputElement>,
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    e.preventDefault();
+    const token = e.dataTransfer.getData('text/plain');
+    if (!token) return;
+
+    const target = e.currentTarget;
+    const start = target.selectionStart || 0;
+    const end = target.selectionEnd || 0;
+    const text = target.value;
+    
+    const newValue = text.substring(0, start) + token + text.substring(end);
+    setter(newValue);
+    
+    // Set focus back and place cursor after inserted token
+    setTimeout(() => {
+      target.focus();
+      const newPos = start + token.length;
+      target.setSelectionRange(newPos, newPos);
+    }, 0);
+  };
+
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
   const [branding, setBranding] = useState<CompanySettings | null>(null);
   const [loading, setLoading] = useState(true);
@@ -291,6 +315,8 @@ We look forward to guiding your education credentials.
                     placeholder="We're glad to welcome you to the {{program_name}} accreditation!"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => handleDrop(e, setSubject)}
                     className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500"
                   />
                 </div>
@@ -298,15 +324,19 @@ We look forward to guiding your education credentials.
                 {/* Insertion chips framework container */}
                 <div className="space-y-2">
                   <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block">Variable Insertion Chips (Smart Blocks Node)</span>
-                  <p className="text-[10px] text-slate-500">Click any chip token below to insert dynamic variable templates fields into your editor.</p>
+                  <p className="text-[10px] text-slate-500">Drag any chip token below directly into inputs or click to insert at cursor position.</p>
                   <div className="flex flex-wrap gap-1.5 bg-slate-950/40 p-3 rounded-xl border border-slate-850 max-h-[140px] overflow-y-auto">
                     {VARIABLE_TOKENS.map((tok, idx) => (
                       <button
                         key={idx}
                         type="button"
+                        draggable={true}
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('text/plain', tok.token);
+                        }}
                         onClick={() => handleInsertToken(tok.token)}
-                        className="bg-slate-900 hover:bg-slate-850 hover:border-violet-500/40 border border-slate-800 rounded-lg px-2.5 py-1 text-[10px] text-slate-300 font-mono flex items-center gap-1 cursor-pointer transition-all"
-                        title={`Inserts placeholder replacement corresponding to actual customer values, e.g. "${tok.mockValue}"`}
+                        className="bg-slate-900 hover:bg-slate-850 hover:border-violet-500/40 border border-slate-800 rounded-lg px-2.5 py-1 text-[10px] text-slate-300 font-mono flex items-center gap-1 cursor-grab active:cursor-grabbing transition-all"
+                        title={`Drag & drop or click to insert dynamic variable values, e.g. "${tok.mockValue}"`}
                       >
                         <Tag className="w-2.5 h-2.5 text-violet-400" />
                         {tok.label}
@@ -322,6 +352,8 @@ We look forward to guiding your education credentials.
                     rows={12}
                     value={htmlContent}
                     onChange={(e) => setHtmlContent(e.target.value)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => handleDrop(e, setHtmlContent)}
                     placeholder="Provide standard corporate notifications details. Supported formatting tags: <strong> 🗣️, <p> 📄, etc."
                     className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500 font-sans leading-relaxed"
                   />

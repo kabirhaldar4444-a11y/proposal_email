@@ -136,8 +136,8 @@ const defaultInvoices: Invoice[] = [
 
 const defaultTemplates: EmailTemplate[] = [
   {
-    id: 'temp_isuccessnode',
-    templateName: 'I-SUCCESSNODE Course Proposal Template',
+    id: 'temp_isuccessnode_proposal',
+    templateName: 'I-SUCCESSNODE Program Proposal',
     subject: 'Thank you for your interest - Proposal from I-SUCCESSNODE',
     category: 'Sponsorship',
     createdAt: new Date().toISOString(),
@@ -145,23 +145,54 @@ const defaultTemplates: EmailTemplate[] = [
 <p>Greetings from <strong>I-SUCCESSNODE (OPC) Private Limited</strong>!</p>
 <p>It was a pleasure speaking with you earlier. We appreciate your interest in our professional training and development programs. As discussed, please find below the details of our proposal along with the course fee and next steps.</p>
 
-<p><strong>About Our Services:</strong></p>
-<p>At I-SUCCESSNODE, we focus on helping individuals strengthen their personal and professional skills to achieve greater success in their careers. Our training model is designed for working professionals and aspirants who are looking to upgrade their confidence, communication, leadership, and overall personality to stand out in their professional journey.</p>
+<h3 style="margin-top: 24px; color: #002d62; border-bottom: 2px solid #002d62; padding-bottom: 6px; font-size: 16px;">About Our Services</h3>
+<p>At <strong>I-SUCCESSNODE</strong>, we focus on helping individuals strengthen their personal and professional skills to achieve greater success in their careers. Our training model is designed for <strong>working professionals and aspirants</strong> who are looking to upgrade their confidence, communication, leadership, and overall personality to stand out in their professional journey.</p>
+<p>We understand that every learner has unique goals, so we ensure that each participant receives <strong>personalized guidance from industry experts and experienced trainers</strong>. Our flexible learning approach allows you to learn at your own pace, from anywhere, and at any time — without disrupting your work-life balance.</p>
+<p>From enhancing self-confidence and public presence to mastering decision-making and professional behaviour, we are committed to guiding you step-by-step toward your personal growth and career advancement.</p>
 
-<p>We understand that every learner has unique goals, so we ensure that each participant receives personalized guidance from industry experts and experienced trainers.</p>
+<p><strong>Flexible Learning:</strong><br/>
+Learners receive comprehensive study materials and recorded video sessions within 6 working hours of enrollment — enabling self-paced learning anytime, anywhere.</p>
+
+<p style="margin-top: 12px;"><strong>Fast & Transparent Onboarding:</strong><br/>
+After enrollment, candidates receive an official invoice, study materials, and training access promptly.</p>
+
+<p style="margin-top: 12px;"><strong>Structured Evaluation:</strong><br/>
+A Pre-Board Exam is scheduled within 24–48 hours to help learners assess their preparation before the final assessment.</p>
+
+<p style="margin-top: 12px;"><strong>Recognized Certification:</strong><br/>
+Upon successful completion of the final online exam, learners receive a Final PC Softcopy Certificate verifying their successful training and certification status.</p>
+
+<p style="margin-top: 12px;"><strong>Digital Convenience:</strong><br/>
+All materials, exams, and certifications are delivered entirely online — ensuring quick, hassle-free access from any location.</p>
+
+<p style="margin-top: 12px;"><strong>Flexible Course Duration:</strong><br/>
+The complete program is designed to be completed within 60 to 90 days, giving learners the flexibility to balance studies with their schedules.</p>
+
+<p style="margin-top: 12px;"><strong>Fair Refund Policy:</strong><br/>
+A 90% refund is available before attempting any exam. A minimal 10% fee is retained to cover digital resources and content access.</p>
+
+<p style="margin-top: 12px;"><strong>Material Dispatch</strong><br/>
+The Initial PC Softcopy will be delivered within 48 to 72 hours after the Pre-Board Exam attempt. The initial soft copy will represent that the customer is under training, once they complete the final exam, then only they will be getting the final certificates.</p>
+
+<p style="margin-top: 12px;"><strong>Commitment to Transparency:</strong><br/>
+All processes — from enrollment to certification — are governed by clear, structured policies to ensure learners receive reliable, transparent service throughout their journey.</p>
+
+<h3 style="margin-top: 28px; color: #002d62; border-bottom: 2px solid #002d62; padding-bottom: 6px; font-size: 16px;">Proposed Plan & Fee Details</h3>
 
 {{invoice_table}}
 
-<p><strong>Next Steps:</strong></p>
-<ol>
-  <li>Review the pricing structure above showing your 50% fixed sponsorship coverage.</li>
-  <li>Confirm your selected course slots and batch timings with your accounts executive.</li>
-  <li>Complete enrollment payment via the invoice checkout link.</li>
+<p>Once the payment is completed, our onboarding team will immediately begin your enrolment process. You’ll be connected with your dedicated mentor, who will assist you throughout your training journey.</p>
+
+<h3 style="margin-top: 28px; color: #002d62; border-bottom: 2px solid #002d62; padding-bottom: 6px; font-size: 16px;">Next Steps</h3>
+<ol style="padding-left: 20px; font-size: 13px; line-height: 1.8; margin-top: 10px;">
+  <li style="margin-bottom: 4px;">Review this proposal and confirm your enrollment.</li>
+  <li style="margin-bottom: 4px;">Fill out this order form: <a href="https://www.isuccessnode.com/contact.html" style="color: #4f46e5; text-decoration: underline; font-weight: 500;">https://www.isuccessnode.com/contact.html</a></li>
+  <li style="margin-bottom: 4px;">Proceed with payment using your preferred payment method.</li>
+  <li style="margin-bottom: 4px;">Receive your onboarding details and personalized session schedule within 24 working hours of payment confirmation.</li>
 </ol>
 
-<p>Should you have any queries, please feel free to reach out to us at {{company_email}} or {{company_phone}}.</p>
-
-<p>{{email_signature}}</p>`
+<p style="margin-top: 16px;">Should you have any questions or require assistance at any stage, please feel free to reach out. Our team is available to ensure you have a smooth and transparent onboarding experience.</p>
+<p>We look forward to welcoming you to <strong>I-SUCCESSNODE</strong>, where personal growth meets professional excellence.</p>`
   },
   {
     id: 'temp_invoice',
@@ -266,7 +297,7 @@ const defaultLogs: EmailLog[] = [
     id: 'log_1',
     customerId: 'cust_1',
     invoiceId: 'inv_101',
-    templateId: 'temp_isuccessnode',
+    templateId: 'temp_isuccessnode_proposal',
     email: 'rahul.sharma@vertex-corp.io',
     subject: 'Thank you for your interest - Proposal from I-SUCCESSNODE',
     status: 'Delivered',
@@ -482,7 +513,25 @@ export const api = {
 
   templates: {
     list: async () => {
-      return getStorageItem<EmailTemplate[]>('isucc_templates', defaultTemplates);
+      const list = getStorageItem<EmailTemplate[]>('isucc_templates', defaultTemplates);
+      let changed = false;
+      let updatedList = list.filter(t => t.id !== 'temp_isuccessnode');
+      if (updatedList.length !== list.length) {
+        changed = true;
+      }
+      if (!updatedList.some(t => t.id === 'temp_isuccessnode_proposal')) {
+        const newTemp = defaultTemplates.find(t => t.id === 'temp_isuccessnode_proposal');
+        if (newTemp) {
+          // Insert at index where other onboarding templates are, or just at the beginning
+          updatedList.unshift(newTemp);
+          changed = true;
+        }
+      }
+      if (changed) {
+        setStorageItem('isucc_templates', updatedList);
+        return updatedList;
+      }
+      return list;
     },
     
     create: async (data: Partial<EmailTemplate>) => {

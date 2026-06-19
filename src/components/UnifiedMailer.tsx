@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Users, DollarSign, Mail, FileText, Settings, 
   Send, LogOut, Sparkles, X, Plus, Trash2, Printer, 
   Download, Copy, HelpCircle, Info, Percent, Gift, Award, Check, User as UserIcon, RefreshCw,
-  Edit3
+  Edit3, Tag
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { Customer, Invoice, EmailTemplate, EmailLog, User, CompanySettings, InvoiceItem, InvoiceStatus } from '../types';
@@ -70,8 +70,45 @@ const COURSE_PRESETS: ProgramPreset[] = [
   }
 ];
 
+const DRAGGABLE_TOKENS = [
+  { token: '{{customer_name}}', label: 'Customer Name' },
+  { token: '{{customer_email}}', label: 'Customer Email' },
+  { token: '{{company_name}}', label: 'Client Company' },
+  { token: '{{invoice_table}}', label: 'Proposal Table' },
+  { token: '{{invoice_total}}', label: 'Invoice Total' },
+  { token: '{{sponsorship_amount}}', label: 'Sponsorship Discount' },
+  { token: '{{payable_amount}}', label: 'Total Payable' },
+  { token: '{{email_signature}}', label: 'Email Signature' },
+  { token: '{{company_phone}}', label: 'Company Phone' },
+  { token: '{{company_email}}', label: 'Company Email' }
+];
+
 export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout, activeTab, setActiveTab }: UnifiedMailerProps) {
   // --- CORE STATE ---
+  const handleDrop = (
+    e: React.DragEvent<HTMLTextAreaElement | HTMLInputElement>,
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    e.preventDefault();
+    const token = e.dataTransfer.getData('text/plain');
+    if (!token) return;
+
+    const target = e.currentTarget;
+    const start = target.selectionStart || 0;
+    const end = target.selectionEnd || 0;
+    const text = target.value;
+    
+    const newValue = text.substring(0, start) + token + text.substring(end);
+    setter(newValue);
+    
+    // Set focus back and place cursor after inserted token
+    setTimeout(() => {
+      target.focus();
+      const newPos = start + token.length;
+      target.setSelectionRange(newPos, newPos);
+    }, 0);
+  };
+
   const [historyPr, setHistoryPr] = useState<Invoice[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
@@ -107,7 +144,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
   const [applySponsorship, setApplySponsorship] = useState<boolean>(false); // sponsorship is 50% only if selected, else don't show
   const [sponsorshipPercent, setSponsorshipPercent] = useState<number>(0); // Default 0 (becomes 50 when checked)
   const [grandDiscountPercent, setGrandDiscountPercent] = useState<number>(0);
-  const [selectedTemplateId, setSelectedTemplateId] = useState('temp_isuccessnode');
+  const [selectedTemplateId, setSelectedTemplateId] = useState('temp_isuccessnode_proposal');
 
   // Custom templates creator modal & form states
   const [isCreateTemplateOpen, setIsCreateTemplateOpen] = useState(false);
@@ -320,8 +357,8 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
   // --- DYNAMIC PREVIEW COMPILING ---
   const generateInvoiceTableHtml = () => {
     let ht = `
-      <div style="width: 100%; overflow-x: auto; margin: 20px 0; -webkit-overflow-scrolling: touch;">
-        <table style="width: 100%; min-width: 585px; border-collapse: collapse; border: 1.5px solid #000000; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #000000;">
+      <div style="width: 100%; overflow-x: auto; margin: 20px 0; -webkit-overflow-scrolling: touch; text-align: center;">
+        <table style="width: 55%; min-width: 320px; margin: 0 auto; border-collapse: collapse; border: 1.5px solid #000000; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #000000;">
           <thead>
             <tr style="background-color: #002d62; color: #ffffff;">
               <th style="padding: 10px; border: 1.5px solid #000000; text-align: left; font-weight: bold; font-size: 12px; text-transform: uppercase;">Selected Programs</th>
@@ -1384,8 +1421,35 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
               </div>
             </div>
 
+            {/* DRAGGABLE CHIPS FOR PROPOSAL BUILDER */}
+            <div className="space-y-2 mt-3">
+              <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase block">Draggable Variable Chips</span>
+              <p className="text-[10px] text-slate-500">Drag any chip and drop it directly into the subject or body editors below.</p>
+              <div className="flex flex-wrap gap-1.5 bg-slate-950/40 p-3 rounded-xl border border-slate-850 max-h-[120px] overflow-y-auto">
+                {DRAGGABLE_TOKENS.map((tok, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    draggable={true}
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData('text/plain', tok.token);
+                    }}
+                    onClick={() => {
+                      setCustomBody(prev => prev + ' ' + tok.token);
+                      onNotify(`Appended tag: ${tok.token}`, 'success');
+                    }}
+                    className="bg-slate-900 hover:bg-slate-850 hover:border-violet-500/40 border border-slate-800 rounded-lg px-2.5 py-1 text-[10px] text-slate-300 font-mono flex items-center gap-1 cursor-grab active:cursor-grabbing transition-all"
+                    title={`Drag and drop or click to insert ${tok.token}`}
+                  >
+                    <Tag className="w-2.5 h-2.5 text-violet-400" />
+                    {tok.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* SUBJECT & DRAFT COORD TEXTAREAS */}
-            <div className="space-y-3">
+            <div className="space-y-3 mt-4">
               <div>
                 <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Custom Subject Coordinate</label>
                 <input
@@ -1393,6 +1457,8 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                   placeholder="Subject Line"
                   value={customSubject}
                   onChange={(e) => setCustomSubject(e.target.value)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => handleDrop(e, setCustomSubject)}
                   className="w-full text-xs font-bold bg-slate-950/60 border border-slate-800 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 rounded-lg py-2 px-3 text-slate-100 outline-none transition-all"
                 />
               </div>
@@ -1413,9 +1479,11 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                   placeholder="Main email markup body"
                   value={customBody}
                   onChange={(e) => setCustomBody(e.target.value)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => handleDrop(e, setCustomBody)}
                   className="w-full text-xs bg-slate-950/60 border border-slate-800 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 rounded-lg py-2 px-3 text-slate-100 outline-none font-mono leading-relaxed transition-all"
                 />
-                <span className="text-[9px] text-slate-500 font-mono mt-1 block">Supports placeholders: {"{{customer_name}}, {{invoice_table}}, {{company_email}}, {{email_signature}}"}</span>
+                <span className="text-[9px] text-slate-500 font-mono mt-1 block font-medium">Supports drag & drop. Placeholders: {"{{customer_name}}, {{invoice_table}}, {{company_email}}, {{email_signature}}"}</span>
               </div>
             </div>
           </div>
@@ -1553,8 +1621,33 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
             </div>
 
             <div className="space-y-4 pt-1">
+              {/* DRAGGABLE CHIPS FOR MODAL TEMPLATE CREATOR */}
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-bold text-slate-400 block">Draggable Variable Chips</span>
+                <div className="flex flex-wrap gap-1 bg-slate-950/40 p-2 rounded-xl border border-slate-850/50 max-h-[85px] overflow-y-auto">
+                  {DRAGGABLE_TOKENS.map((tok, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      draggable={true}
+                      onDragStart={(e) => {
+                        e.dataTransfer.setData('text/plain', tok.token);
+                      }}
+                      onClick={() => {
+                        setNewTemplateContent(prev => prev + ' ' + tok.token);
+                      }}
+                      className="bg-slate-900 hover:bg-slate-850 hover:border-violet-500/40 border border-slate-800 rounded-lg px-2 py-0.5 text-[9px] text-slate-300 font-mono flex items-center gap-1 cursor-grab active:cursor-grabbing transition-all"
+                      title={`Drag & drop or click to insert ${tok.token}`}
+                    >
+                      <Tag className="w-2.5 h-2.5 text-violet-400" />
+                      {tok.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div>
-                <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Template Label / Name</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Template Label / Name</label>
                 <input
                   type="text"
                   placeholder="e.g. Special Offer Proposal"
@@ -1565,26 +1658,30 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
               </div>
 
               <div>
-                <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Subject Line</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Subject Line</label>
                 <input
                   type="text"
                   placeholder="e.g. Customized Sponsorship Proposal for &#123;&#123;customer_name&#125;&#125;"
                   value={newTemplateSubject}
                   onChange={(e) => setNewTemplateSubject(e.target.value)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => handleDrop(e, setNewTemplateSubject)}
                   className="w-full text-xs font-bold bg-slate-950/60 border border-slate-800 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 rounded-lg py-2 px-3 text-slate-100 outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">HTML Body Content</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">HTML Body Content</label>
                 <textarea
                   rows={8}
                   placeholder="<p>Dear &#123;&#123;customer_name&#125;&#125;,</p> <p>Write your template content here...</p> &#123;&#123;invoice_table&#125;&#125;"
                   value={newTemplateContent}
                   onChange={(e) => setNewTemplateContent(e.target.value)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => handleDrop(e, setNewTemplateContent)}
                   className="w-full text-xs bg-slate-950/60 border border-slate-800 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 rounded-lg py-2 px-3 text-slate-100 outline-none font-mono leading-relaxed transition-all"
                 />
-                <span className="text-[9px] text-slate-400 font-mono mt-1 block">Supported values: &#123;&#123;customer_name&#125;&#125;, &#123;&#123;company_name&#125;&#125;, &#123;&#123;invoice_table&#125;&#125;, &#123;&#123;payable_amount&#125;&#125;</span>
+                <span className="text-[9px] text-slate-400 font-mono mt-1 block">Supports drag & drop. Values: &#123;&#123;customer_name&#125;&#125;, &#123;&#123;company_name&#125;&#125;, &#123;&#123;invoice_table&#125;&#125;, &#123;&#123;payable_amount&#125;&#125;</span>
               </div>
             </div>
 
