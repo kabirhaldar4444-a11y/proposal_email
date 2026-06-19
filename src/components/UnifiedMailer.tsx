@@ -1097,7 +1097,14 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                   type="text"
                   placeholder="e.g. Rahul Nair"
                   value={candidateName}
-                  onChange={(e) => setCandidateName(e.target.value)}
+                  onChange={(e) => {
+                    const rawValue = e.target.value;
+                    const capitalized = rawValue
+                      .split(' ')
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(' ');
+                    setCandidateName(capitalized);
+                  }}
                   className="w-full text-xs bg-slate-950/60 border border-slate-800 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 rounded-lg py-2 px-3 text-slate-100 outline-none transition-all"
                 />
               </div>
@@ -1117,9 +1124,13 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                 <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Mobile / Phone Coordinate</label>
                 <input
                   type="text"
-                  placeholder="e.g. +91 99887 76655"
+                  placeholder="e.g. 9988776655"
                   value={candidatePhone}
-                  onChange={(e) => setCandidatePhone(e.target.value)}
+                  onChange={(e) => {
+                    const cleaned = e.target.value.replace(/\D/g, '');
+                    const truncated = cleaned.slice(0, 10);
+                    setCandidatePhone(truncated);
+                  }}
                   className="w-full text-xs bg-slate-950/60 border border-slate-800 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 rounded-lg py-2 px-3 text-slate-100 outline-none transition-all"
                 />
               </div>
