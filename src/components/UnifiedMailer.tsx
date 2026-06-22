@@ -300,17 +300,17 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
     const discPct = Number(row.discountPercent) || 0;
     const gstPct = Number(row.gstPercent) || 0;
 
-    const discAmt = Math.round(basePrice * (discPct / 100) * 100) / 100;
-    const discountedPrice = Math.round((basePrice - discAmt) * 100) / 100;
-    const gstAmt = Math.round(discountedPrice * (gstPct / 100) * 100) / 100;
-    const totalVal = Math.round((discountedPrice + gstAmt) * 100) / 100;
+    const discAmt = basePrice * (discPct / 100);
+    const discountedPrice = basePrice - discAmt;
+    const gstAmt = discountedPrice * (gstPct / 100);
+    const totalVal = discountedPrice + gstAmt;
 
     return {
       ...row,
-      discountAmount: discAmt,
-      discountedPrice,
-      gstAmount: gstAmt,
-      total: totalVal
+      discountAmount: Math.round(discAmt * 100) / 100,
+      discountedPrice: Math.round(discountedPrice * 100) / 100,
+      gstAmount: Math.round(gstAmt * 100) / 100,
+      total: Math.round(totalVal * 100) / 100
     };
   });
 
@@ -1200,7 +1200,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                         onChange={(e) => {
                           const enteredTotal = Number(e.target.value) || 0;
                           const gstPct = row.gstPercent || 18;
-                          const calculatedBase = Math.round((enteredTotal / (1 + gstPct / 100)) * 100) / 100;
+                          const calculatedBase = enteredTotal / (1 + gstPct / 100);
                           
                           setCourseRows(prev => {
                             const copy = [...prev];
@@ -1240,7 +1240,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                       value={row.gstPercent}
                       onChange={(e) => {
                         const newGstPct = Number(e.target.value) || 0;
-                        const calculatedBase = Math.round((row.total / (1 + newGstPct / 100)) * 100) / 100;
+                        const calculatedBase = row.total / (1 + newGstPct / 100);
                         
                         setCourseRows(prev => {
                           const copy = [...prev];
