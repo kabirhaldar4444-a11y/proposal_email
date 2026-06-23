@@ -143,7 +143,8 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
   // Adjustments & Variable logic
   const [applySponsorship, setApplySponsorship] = useState<boolean>(false); // sponsorship is 50% only if selected, else don't show
   const [sponsorshipPercent, setSponsorshipPercent] = useState<number>(0); // Default 0 (becomes 50 when checked)
-  const [grandDiscountPercent, setGrandDiscountPercent] = useState<number>(0);
+  const [grandDiscountValue, setGrandDiscountValue] = useState<number>(0);
+  const [grandDiscountType, setGrandDiscountType] = useState<'percent' | 'value'>('percent');
   const [selectedTemplateId, setSelectedTemplateId] = useState('temp_isuccessnode_proposal');
 
   // Custom templates creator modal & form states
@@ -321,7 +322,18 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
   const computedGrandTotal = courseRowsCalculated.reduce((sum, item) => sum + item.total, 0);
 
   // Grand total level discount logic
-  const grandDiscountAmount = Math.round(computedGrandTotal * (grandDiscountPercent / 100) * 100) / 100;
+  const grandDiscountAmount = grandDiscountType === 'percent'
+    ? Math.round(computedGrandTotal * (grandDiscountValue / 100) * 100) / 100
+    : Math.min(computedGrandTotal, grandDiscountValue);
+
+  const grandDiscountPercent = grandDiscountType === 'percent'
+    ? grandDiscountValue
+    : (computedGrandTotal > 0 ? Math.round((grandDiscountAmount / computedGrandTotal) * 100) : 0);
+
+  const grandDiscountLabel = grandDiscountType === 'percent'
+    ? `Grand Discount (${grandDiscountPercent}%)`
+    : `Grand Discount (₹${grandDiscountValue.toLocaleString('en-IN')})`;
+
   const grandTotalAfterDiscount = Math.max(0, computedGrandTotal - grandDiscountAmount);
 
   // Fixed Coverage Sponsorship calculations (applied after grand discount)
@@ -426,10 +438,10 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
           </tr>
     `;
 
-    if (grandDiscountPercent > 0) {
+    if (grandDiscountAmount > 0) {
       ht += `
           <tr style="text-align: center;">
-            <td colspan="4" style="background-color: #fafaf9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">Grand Discount (${grandDiscountPercent}%)</td>
+            <td colspan="4" style="background-color: #fafaf9; color: #000000; font-weight: bold; text-align: right; border: 1.5px solid #000000; padding: 10px; font-size: 12px; text-transform: uppercase;">${grandDiscountLabel}</td>
             <td style="padding: 10px; border: 1.5px solid #000000; font-weight: bold; text-align: center; background-color: #ffffff; font-size: 12px; color: #000000;">-₹${grandDiscountAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
           <tr style="text-align: center;">
@@ -505,7 +517,7 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
     compileActiveTemplate();
   }, [
     candidateName, candidateEmail, candidatePhone, companyName, designation, address,
-    courseRows, applySponsorship, sponsorshipPercent, grandDiscountPercent, selectedTemplateId, branding
+    courseRows, applySponsorship, sponsorshipPercent, grandDiscountPercent, grandDiscountValue, grandDiscountType, selectedTemplateId, branding
   ]);
 
   const handleResetTemplateToDefaults = () => {
@@ -922,8 +934,8 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
     doc.text(`GRAND TOTAL (MRP):`, 110, startY + 9);
     doc.text(`INR ${Math.round(computedGrandTotal).toLocaleString('en-IN')}`, 174, startY + 9);
 
-    if (grandDiscountPercent > 0) {
-      doc.text(`GRAND DISCOUNT (${grandDiscountPercent}%):`, 110, startY + 14);
+    if (grandDiscountAmount > 0) {
+      doc.text(`${grandDiscountLabel.toUpperCase()}:`, 110, startY + 14);
       doc.setTextColor(15, 23, 42);
       doc.text(`- INR ${Math.round(grandDiscountAmount).toLocaleString('en-IN')}`, 174, startY + 14);
       doc.setTextColor(15, 23, 42);
@@ -1067,7 +1079,8 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
                   setCourseRows([{ programName: '', duration: '90 Days', price: 0, total: 0, discountPercent: 0, gstPercent: 18 }]);
                   setApplySponsorship(false);
                   setSponsorshipPercent(0);
-                  setGrandDiscountPercent(0);
+                  setGrandDiscountValue(0);
+                  setGrandDiscountType('percent');
                   onNotify('Active proposal workspace cleared completely!', 'success');
                 }}
                 className="px-2.5 py-1 text-[10px] uppercase font-bold tracking-tight bg-slate-900 border border-slate-800 hover:bg-slate-850 text-slate-400 hover:text-white rounded-lg cursor-pointer transition-colors"
@@ -1313,17 +1326,64 @@ export default function UnifiedMailer({ theme = 'dark', onNotify, user, onLogout
               <div className="border-t md:border-t-0 md:border-l border-slate-800 pt-3 md:pt-0 md:px-4 flex flex-col justify-center">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-bold text-slate-200">Grand Discount</span>
-                  <div className="relative w-20">
-                    <input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={grandDiscountPercent || ''}
-                      onChange={(e) => setGrandDiscountPercent(Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
-                      placeholder="0"
-                      className="w-full text-right text-xs font-mono font-bold bg-slate-900 border border-slate-800 focus:border-amber-500 rounded-lg py-1 px-2 text-amber-400 outline-none pr-6"
-                    />
-                    <span className="absolute right-2 top-1 text-xs font-bold text-slate-400">%</span>
+                  <div className="flex items-center gap-1">
+                    <div className="flex bg-slate-950 p-0.5 rounded-lg border border-slate-800">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setGrandDiscountType('percent');
+                          setGrandDiscountValue(0);
+                        }}
+                        className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold transition-all cursor-pointer ${
+                          grandDiscountType === 'percent'
+                            ? 'bg-amber-500 text-slate-950 shadow-sm font-extrabold'
+                            : 'text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        %
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setGrandDiscountType('value');
+                          setGrandDiscountValue(0);
+                        }}
+                        className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold transition-all cursor-pointer ${
+                          grandDiscountType === 'value'
+                            ? 'bg-amber-500 text-slate-950 shadow-sm font-extrabold'
+                            : 'text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        ₹
+                      </button>
+                    </div>
+
+                    <div className="relative w-24">
+                      {grandDiscountType === 'value' && (
+                        <span className="absolute left-2 top-1.5 text-xs font-bold text-slate-500">₹</span>
+                      )}
+                      <input
+                        type="number"
+                        min="0"
+                        max={grandDiscountType === 'percent' ? 100 : undefined}
+                        value={grandDiscountValue || ''}
+                        onChange={(e) => {
+                          const val = Number(e.target.value) || 0;
+                          if (grandDiscountType === 'percent') {
+                            setGrandDiscountValue(Math.min(100, Math.max(0, val)));
+                          } else {
+                            setGrandDiscountValue(Math.max(0, val));
+                          }
+                        }}
+                        placeholder="0"
+                        className={`w-full text-right text-xs font-mono font-bold bg-slate-900 border border-slate-800 focus:border-amber-500 rounded-lg py-1 px-2 text-amber-400 outline-none ${
+                          grandDiscountType === 'percent' ? 'pr-6' : 'pl-6'
+                        }`}
+                      />
+                      {grandDiscountType === 'percent' && (
+                        <span className="absolute right-2 top-1.5 text-xs font-bold text-slate-400">%</span>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <p className="text-[10px] text-slate-500 mt-1">Direct deduction applied straight to the grand total.</p>
